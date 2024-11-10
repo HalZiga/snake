@@ -121,7 +121,6 @@ void spawn_teris(GameInfo_t *game, GameFigure_t *figures) {
       copy_figure(current_figure, figures->figure6);
       break;
     default:
-      printf("Кака это возможно");
       break;
   }
 

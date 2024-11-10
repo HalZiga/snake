@@ -14,7 +14,7 @@ OS = $(shell uname)
 ifeq ($(OS),Linux)
     det_OS = -lcheck -lm -lrt -lpthread -lsubunit -lncurses -lgtest
 	project = desk.pro
-	inst_s = cd gui && cd desktop && cd desk && qmake && make && rm Makefile && mkdir -p ../../../build && mv $(project) ../../../build/
+	inst_s = cd gui && cd desktop && cd desk && qmake  && make && rm Makefile && mkdir -p ../../../build && mv $(project) ../../../build/
 
 else
     det_OS = -lcheck -lm -lpthread -lgtest -lncurses
@@ -24,15 +24,14 @@ endif
 
 all: dist gcov_reports style dvi
 
-console:
+cans:
 	$(CXX) $(FLAGS) $(SNAKE) $(TETRIS) $(FRONTEND) -o game -lncurses
 
-install: clean console
-	$(my_inst)
-	mv game build
-
-uninstall:
-	mv game build
+console:
+	$(CXX) $(FLAGS) $(SNAKE) $(TETRIS) $(FRONTEND) -o game -lncurses
+	./game
+web:
+	./gui/desktop/desk/release/desk.exe
 	
 test_snake: clean
 	$(CXX) $(FLAGS) $(SNAKE) $(TESTS) -o test $(det_OS)
@@ -41,7 +40,7 @@ test_snake: clean
 gcov_reports: test
 	$(CXX) --coverage $(FLAGS) $(SNAKE) $(TESTS) -o test $(det_OS)
 	./test
-	lcov --ignore-errors inconsistent --parallel --capture --directory . --output-file coverage.info
+	lcov --capture --directory . --output-file coverage.info
 	genhtml coverage.info --output-directory report
 	open report/index.html
 
@@ -53,12 +52,8 @@ style:
 	clang-format -style=google -n  brick_game/controller/* brick_game/snake/*.h \
 	brick_game/snake/*.cc gui/cli/* brick_game/tetris/* gui/cli/* tests/*
 	
-dist: clean install
-	mkdir -p ../dist
-	tar -czvf ../dist/game_archive.tgz Documentation.md build
-	rm -fr game build
 dvi:
-	open Documentation.md
+	open ../Documentation.md
 
 clean: 
 	rm -fr *.o gui/desktop/desk/*.o *.a *.gch *.gcno *.gcda *.info gcov_test s21_test.info ./snake test ../build ../dist *.txt report ./test_tetr rm -rf ../dist/* game .record.txt build
