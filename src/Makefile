@@ -22,7 +22,7 @@ else
 	my_inst = cd ./gui/desktop/desk && qmake desk.pro && make && rm Makefile && mkdir -p ../../../build && mv desk.app ../../../build/
 endif
 
-all: dist gcov_reports style dvi
+all: gcov_reports style dvi
 
 cans:
 	$(CXX) $(FLAGS) $(SNAKE) $(TETRIS) $(FRONTEND) -o game -lncurses
